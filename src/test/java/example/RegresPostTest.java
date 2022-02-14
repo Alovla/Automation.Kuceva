@@ -18,23 +18,28 @@ import org.junit.jupiter.api.Test;
 public class RegresPostTest extends BaseTest {
     @Test
     void CreateTest(){
+MyDTO myDTO = new MyDTO();
+myDTO.setName("morpheus");
+myDTO.setJob("leader");
+
       String create =  given().log().all()
-                .body("\"name\": \"morpheus\",\n" +
-                        "    \"job\": \"leader\"")
+                .body(myDTO)
                 .when()
                 .post("https://reqres.in/api/users")
                 .prettyPeek()
                 .then()
-                .statusCode(201).extract().jsonPath().getString("name");
-      System.out.println("name " + create );
+                .statusCode(201).extract().jsonPath().getString("createdAt");
+
+      System.out.println("createdAt " + create );
     }
 @Test
     void RegisterSuccessfulTest(){
-        given().log().all()
-                .header("Content-Type","application/json")
-                .header("charset","utf-8")
-                .body(" {   \"email\": \"eve.holt@reqres.in\",\n" +
-                        "    \"password\": \"pistol\"}")
+        MyDTO myDTO = new MyDTO();
+        myDTO.setEmail("eve.holt@reqres.in");
+        myDTO.setPassword("pistol");
+
+        given().log().all().contentType("application/json ; charset= utf-8")
+                .body(myDTO)
                 .when()
                 .post("https://reqres.in/api/register")
                 .prettyPeek()
@@ -43,9 +48,7 @@ public class RegresPostTest extends BaseTest {
 }
 @Test
     void RegisterUnsuccessfulTest(){
-        given()
-                .header("Content-Type", "application/json")
-                .header("charset","utf-8")
+        given().contentType("application/json ; charset= utf-8")
                 .body("{    \"email\": \"sydney@fife\"}")
                 .when()
                 .post("https://reqres.in/api/register")
@@ -55,9 +58,7 @@ public class RegresPostTest extends BaseTest {
 }
 @Test
     void LoginsuccessfulTest(){
-        given()
-                .header("Content-Type", "application/json")
-                .header("charset","utf-8")
+        given().contentType("application/json ; charset= utf-8")
                 .body("{\"email\": \"eve.holt@reqres.in\",\n" +
                         "    \"password\": \"cityslicka\"}")
                 .when()
@@ -69,9 +70,7 @@ public class RegresPostTest extends BaseTest {
 }
 @Test
     void LoginUnsuccessfulTest(){
-        given()
-                .header("Content-Type","application/json")
-                .header("charset","utf-8")
+        given().contentType("application/json ; charset= utf-8")
                 .body("{ \"email\": \"peter@klaven\"}")
                 .when()
                 .post("https://reqres.in/api/login")

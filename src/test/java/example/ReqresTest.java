@@ -1,10 +1,15 @@
 package example;
 import io.restassured.RestAssured;
+import io.restassured.builder.ResponseSpecBuilder;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
+import io.restassured.specification.RequestSpecification;
+import io.restassured.specification.ResponseSpecification;
 import org.hamcrest.CoreMatchers;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.FileInputStream;
@@ -17,43 +22,53 @@ import static io.restassured.RestAssured.responseSpecification;
 
 public class ReqresTest extends BaseTest {
 
-    String url = "https://reqres.in/api/users?page={page}";
+    String url = "https://reqres.in/";
+
     @Test
     void getListUserTest() {
 
+        Specifications.installSpecification((Specifications.requestSpec(url)),Specifications.responseSpec());
+
         String str = given()
                 .when()
-                .get(url, 1)
+                .get("api/users?page=1")
+                .prettyPeek()
                 .then()
-                .statusCode(200).extract().jsonPath().getString("data.email[0]");
+                .extract().jsonPath().getString("data.email[0]");
         System.out.println("email " + str);
     }
 @Test
         void listUsers2(){
-        String st = given().log().all()
+    Specifications.installSpecification((Specifications.requestSpec(url)),Specifications.responseSpec());
+
+        String st = given()
                 .when()
-                .get(url, 2)
+                .get("api/users?page=2")
                 .then()
-                .statusCode(200).extract().jsonPath().getString("page");
+                .extract().jsonPath().getString("page");
         System.out.println("page " + st);
     }
 @Test
         void listUsers3() {
+
+    Specifications.installSpecification((Specifications.requestSpec(url)),Specifications.responseSpec());
+
     String string = given().log().all()
             .when()
-            .get(url, 3)
+            .get("api/users?page=3")
             .then()
-            .statusCode(200).extract().jsonPath().getString("page");
+            .extract().jsonPath().getString("page");
 System.out.println("Page " + string);
     }
 @Test
         void ListUsersLetters() {
+    Specifications.installSpecification((Specifications.requestSpec(url)),Specifications.responseSpec());
     String letter = given().log().all()
             .when()
-            .get("https://reqres.in/api/users?page=asddfdg")
+            .get("api/users?page=asddfdg")
             .prettyPeek()
             .then()
-            .statusCode(200).extract().jsonPath().getString("page");
+            .extract().jsonPath().getString("page");
     System.out.println("Page " + letter);
 }
 @Test
@@ -61,9 +76,9 @@ System.out.println("Page " + string);
 
         String big = given()
                 .when()
-                .get("https://reqres.in/api/users?page={page}", 232432435)
+                .get(url+"api/users?page= 232432435")
                 .then()
-                .statusCode(200).extract().jsonPath().getString("total");
+                .extract().jsonPath().getString("total");
         System.out.println("pageUsersBig Total " + big);
     }
 
@@ -91,27 +106,30 @@ System.out.println("Page " + string);
 
     @Test
     void getListRecoursTest() {
+
         String ListRecours = given()
                 .when()
-                .get("https://reqres.in/api/unknown")
+                .get(url+"api/unknown")
                 .then()
-                .statusCode(200).extract().jsonPath().getString("total");
+                .extract().jsonPath().getString("total");
         System.out.println("pageUsersBig Total " + ListRecours);
     }
 
     @Test
     void getAllUsersTest() {
+
         String AllUsers = given()
                 .when()
-                .get("https://reqres.in/api/users")
+                .get(url+"api/users")
                 .then()
 
-                .statusCode(200).extract().jsonPath().getString("total");
+                .extract().jsonPath().getString("total");
         System.out.println("getAllUsersTest total " + AllUsers);
     }
 
     @Test
     void SingleRecoursTest() {
+
 
         String single = given()
                 .baseUri("https://reqres.in/api/unknown")
@@ -127,9 +145,11 @@ System.out.println("Page " + string);
 
     @Test
     void SingleRecoursNotFoundTest() {
+        Specifications.installSpecification((Specifications.requestSpec(url)),Specifications.responseSpec());
+
         given()
                 .when()
-                .get("https://reqres.in/api/unknown/23")
+                .get("api/unknown/23")
                 .then()
                 .statusCode(404);
     }

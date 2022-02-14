@@ -10,8 +10,6 @@ import java.util.Properties;
 public abstract class BaseTest {
     static Properties properties;
     static String host;
-    static String name;
-    static String job;
     static String email;
     static String password;
 
@@ -21,8 +19,6 @@ public abstract class BaseTest {
         properties = new Properties();
         properties.load(new FileInputStream("src/test/resources/regres.properties"));
         properties.getProperty("host");
-        properties.getProperty("name","morpheus");
-        properties.getProperty("job","leader");
         properties.getProperty("email","eve.holt@reqres.in");
         properties.getProperty("password","pistol");
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
